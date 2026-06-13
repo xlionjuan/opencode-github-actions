@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP="${APP:-opencode}"
-REPO="${OPENCODE_REPO:-anomalyco/opencode}"
+APP="opencode"
+REPO="anomalyco/opencode"
 VERSION="${OPENCODE_VERSION:-}"
 INSTALL_DIR="${OPENCODE_INSTALL_DIR:-$HOME/.opencode/bin}"
 CACHE_DIR="${OPENCODE_CACHE_DIR:-$HOME/.cache/opencode}"
@@ -229,7 +229,7 @@ install_release() {
         filename="$OPENCODE_FILENAME"
         asset_digest_hex="$OPENCODE_DIGEST_HEX"
         cache_dir="$OPENCODE_CACHE_DIR"
-        asset_download_url="${OPENCODE_DOWNLOAD_URL:-https://github.com/$REPO/releases/download/$VERSION/$filename}"
+        asset_download_url="https://github.com/$REPO/releases/download/$VERSION/$filename"
     else
         read -r filename asset_digest_hex asset_download_url cache_dir < <(
             fetch_asset_metadata | awk -F= '
