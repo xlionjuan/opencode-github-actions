@@ -100,4 +100,4 @@ runs:
         opencode --version
         echo ""
         echo "Running OpenCode:"
-        opencode run "${PROMPT:-Introduce OpenCode in one sentence}"
+        opencode run "${PROMPT:-Is your gh cli logged in?}"
