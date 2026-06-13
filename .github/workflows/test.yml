@@ -39,4 +39,4 @@ jobs:
           MOCK_TEST: true
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          GH_TOKEN: ${{ github.token }}
+          #GH_TOKEN: ${{ github.token }}
