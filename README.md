@@ -21,6 +21,9 @@ curl -fsSL "https://api.github.com/repos/xlionjuan/opencode-github-actions/branc
 
 Then replace `anomalyco/opencode/github@latest` with `xlionjuan/opencode-github-actions@{GIT SHA}`, using the value from the previous step:
 
+> [!WARNING]  
+> You should **NEVER** use `latest` ! Check [Upgrade best practices](https://docs.renovatebot.com/upgrade-best-practices).
+
 ```yaml
 - name: Run opencode
   uses: xlionjuan/opencode-github-actions@{GIT SHA}
