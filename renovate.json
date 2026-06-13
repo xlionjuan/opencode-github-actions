@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "customManagers:githubActionsVersions"
+  ],
+  "automerge": true,
+  "ignoreTests": true,
+  "minimumReleaseAge": "1 day",
+  "internalChecksFilter": "strict",
+  "prCreation": "not-pending"
+}

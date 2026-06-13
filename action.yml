@@ -1,5 +1,5 @@
 name: "opencode GitHub Action - Pinned version forks"
-description: "Run opencode in GitHub Actions workflows"
+description: "Run opencode in GitHub Actions workflows with pinned, verified releases"
 branding:
   icon: "code"
   color: "orange"
@@ -38,33 +38,43 @@ inputs:
     description: "Base URL for OIDC token exchange API. Only required when running a custom GitHub App install. Defaults to https://api.opencode.ai"
     required: false
 
+  MOCK_TEST:
+    description: "If true, skip github run mode and execute opencode run with PROMPT directly."
+    required: false
+    default: "false"
+
 runs:
   using: "composite"
   steps:
-    - name: Get opencode version
-      id: version
+    - name: Resolve opencode release metadata
+      id: meta
       shell: bash
+      env:
+        # renovate: datasource=github-releases depName=anomalyco/opencode
+        OPENCODE_VERSION: "v1.17.3"
       run: |
-        VERSION=$(curl -sf https://api.github.com/repos/anomalyco/opencode/releases/latest | grep -o '"tag_name": *"[^"]*"' | cut -d'"' -f4)
-        echo "version=${VERSION:-latest}" >> $GITHUB_OUTPUT
+        bash "$GITHUB_ACTION_PATH/scripts/opencode-release.sh" metadata >> "$GITHUB_OUTPUT"
 
-    - name: Cache opencode
+    - name: Cache opencode archive
       id: cache
       uses: actions/cache@v5.0.5
       with:
-        path: ~/.opencode/bin
-        key: opencode-${{ runner.os }}-${{ runner.arch }}-${{ steps.version.outputs.version }}
+        path: ${{ steps.meta.outputs.cache_dir }}
+        key: opencode-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.meta.outputs.version }}-${{ steps.meta.outputs.asset_digest_hex }}
 
     - name: Install opencode
-      if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
-      run: curl -fsSL https://opencode.ai/install | bash
-
-    - name: Add opencode to PATH
-      shell: bash
-      run: echo "$HOME/.opencode/bin" >> $GITHUB_PATH
+      run: |
+        bash "$GITHUB_ACTION_PATH/scripts/opencode-release.sh" install
+      env:
+        OPENCODE_VERSION: ${{ steps.meta.outputs.version }}
+        OPENCODE_FILENAME: ${{ steps.meta.outputs.filename }}
+        OPENCODE_DIGEST_HEX: ${{ steps.meta.outputs.asset_digest_hex }}
+        OPENCODE_CACHE_DIR: ${{ steps.meta.outputs.cache_dir }}
+        OPENCODE_INSTALL_DIR: ${{ steps.meta.outputs.install_dir }}
 
     - name: Run opencode
+      if: ${{ inputs.MOCK_TEST != 'true' }}
       shell: bash
       id: run_opencode
       run: opencode github run
@@ -77,3 +87,16 @@ runs:
         MENTIONS: ${{ inputs.mentions }}
         VARIANT: ${{ inputs.variant }}
         OIDC_BASE_URL: ${{ inputs.oidc_base_url }}
+
+    - name: Run mock opencode
+      if: ${{ inputs.MOCK_TEST == 'true' }}
+      shell: bash
+      env:
+        PROMPT: ${{ inputs.prompt }}
+      run: |
+        echo "Running mock mode......(Only used to sure OpenCode exists and working)"
+        echo "OpenCode Version:"
+        opencode --version
+        echo ""
+        echo "Running OpenCode:"
+        opencode run "${PROMPT:-Introduce OpenCode in one sentence}"
