@@ -24,9 +24,11 @@ Then replace `anomalyco/opencode/github@latest` with `xlionjuan/opencode-github-
 > [!WARNING]  
 > You should **NEVER** use `latest` ! Check [Upgrade best practices](https://docs.renovatebot.com/upgrade-best-practices).
 
+The `# main` is necessary to let managers knows which branch it should tracking.
+
 ```yaml
 - name: Run opencode
-  uses: xlionjuan/opencode-github-actions@{GIT SHA}
+  uses: xlionjuan/opencode-github-actions@{GIT SHA} # main
 ```
 
 ## Related issues
