@@ -1,12 +1,34 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:best-practices",
-    "customManagers:githubActionsVersions"
-  ],
-  "automerge": true,
-  "ignoreTests": true,
-  "minimumReleaseAge": "1 day",
-  "internalChecksFilter": "strict",
-  "prCreation": "not-pending"
+  "extends": ["local>xlionjuan/renovatebot-presets"],
+  "packageRules": [
+    {
+      "description": "Use a one-day cooldown for the pinned OpenCode release instead of the shared three-day cooldown.",
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["anomalyco/opencode"],
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "description": "OpenCode cannot be tested automatically in this composite action. Automerge its minor and patch updates after the one-day cooldown.",
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["anomalyco/opencode"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "ignoreTests": true,
+      "automerge": true
+    },
+    {
+      "description": "The composite action has no independent CI for actions/cache. Automerge its non-major updates without tests after the shared cooldown.",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["actions/cache"],
+      "matchUpdateTypes": [
+        "pin",
+        "digest",
+        "pinDigest",
+        "minor",
+        "patch"
+      ],
+      "ignoreTests": true,
+      "automerge": true
+    }
+  ]
 }

@@ -7,7 +7,7 @@ This action is a fork of the [official action](https://github.com/anomalyco/open
 > [!IMPORTANT]  
 > This action uses `${{ github.token }}` in the `Resolve opencode release metadata` step only so `gh` can fetch OpenCode release metadata. By default, the token is not exposed to OpenCode itself. If you want OpenCode to access the token, for example to create issues, pass it through the step environment as `GH_TOKEN: ${{ github.token }}`.
 
-Both `actions/cache` and OpenCode are updated automatically by [Renovate](https://github.com/xlionjuan/opencode-github-actions/issues/1) with `minimumReleaseAge` set to `1`. Use this action with a pinned Git SHA, and make sure you have a dependency management tool like Renovate or Dependabot enabled so you do not miss updates.
+Non-major `actions/cache` and OpenCode updates are merged automatically by [Renovate](https://github.com/xlionjuan/opencode-github-actions/issues/1). OpenCode uses a one-day minimum release age, while `actions/cache` uses the shared three-day policy when its update type supports a cooldown; major updates require manual review. Use this action with a pinned Git SHA, and make sure you have a dependency management tool like Renovate or Dependabot enabled so you do not miss updates.
 
 ## How to use
 
